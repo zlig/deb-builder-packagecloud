@@ -42,4 +42,5 @@ deploy:
   user: $PACKAGECLOUD_USER
   key: $PACKAGECLOUD_KEY
   skip_cleanup: true
-
+  on:
+    branch: production
