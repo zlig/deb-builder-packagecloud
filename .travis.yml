@@ -1,0 +1,45 @@
+##############################################################################################
+#
+# Travis CI configuration file
+# 
+# Set the required secrets in the build settings of the project:
+#   - PACKAGECLOUD_USER
+#   - PACKAGECLOUD_KEY
+#
+##############################################################################################
+env:
+  global:
+  - PACKAGE_NAME=deb-builder-packagecloud
+  - BINTRAY_REPO_NAME=debian
+  - BINTRAY_LICENSE=LGPL-2.1
+
+before_install:
+  # Export variables containing versions and filename
+  - export RELEASE_VERSION=$(cat VERSION)
+  - export BUILD_VERSION=$RELEASE_VERSION.$TRAVIS_BUILD_NUMBER
+  - export BUILD_DATE=$(date "+%Y%m%d")
+  - export PACKAGE_NAME_VERSION=$PACKAGE_NAME-$BUILD_VERSION.deb
+
+script:
+  # Replace version and build number with the Debian control file
+  - sed -i "s/__VERSION__/$BUILD_VERSION/g" $PACKAGE_NAME/DEBIAN/control
+  - sed -i "s/__DATE__/$BUILD_DATE/g" $PACKAGE_NAME/DEBIAN/control
+  # Create the Debian package
+  - dpkg-deb --build $PACKAGE_NAME
+  - mv $PACKAGE_NAME.deb $PACKAGE_NAME_VERSION
+
+after_success:
+  # Output detail on the resulting package for debugging purpose
+  - ls -l $PACKAGE_NAME_VERSION
+  - dpkg --contents $PACKAGE_NAME_VERSION
+  - md5sum $PACKAGE_NAME_VERSION
+  - sha256sum $PACKAGE_NAME_VERSION
+  - export LOCAL_SHA256=$( sha256sum $PACKAGE_NAME_VERSION | cut -d " " -f1 )
+
+deploy:
+  # Upload debian packages to PackageCloud
+  provider: packagecloud
+  user: $PACKAGECLOUD_USER
+  key: $PACKAGECLOUD_KEY
+  skip_cleanup: true
+
