@@ -10,8 +10,9 @@
 env:
   global:
   - PACKAGE_NAME=deb-builder-packagecloud
-  - BINTRAY_REPO_NAME=debian
-  - BINTRAY_LICENSE=LGPL-2.1
+  - REPO_NAME=debs
+  - DISTRIBUTION=ubuntu/bionic
+  - LICENSE=LGPL-2.1
 
 before_install:
   # Export variables containing versions and filename
@@ -39,10 +40,10 @@ after_success:
 deploy:
   # Upload debian packages to PackageCloud
   provider: packagecloud
-  repository: "YOUR REPO"
+  repository: $REPO_NAME
   username: $PACKAGECLOUD_USER
   token: $PACKAGECLOUD_KEY
-  dist: ubuntu/bionic
+  dist: $DISTRIBUTION
   skip_cleanup: true
   on:
     branch: main
