@@ -39,8 +39,10 @@ after_success:
 deploy:
   # Upload debian packages to PackageCloud
   provider: packagecloud
-  user: $PACKAGECLOUD_USER
-  key: $PACKAGECLOUD_KEY
+  repository: "YOUR REPO"
+  username: $PACKAGECLOUD_USER
+  token: $PACKAGECLOUD_KEY
+  dist: ubuntu/bionic
   skip_cleanup: true
   on:
     branch: main
