@@ -7,26 +7,36 @@
 #   - PACKAGECLOUD_KEY
 #
 ##############################################################################################
-name: 'PackageCloud'
-description: 'Interact with PackageCloud via the package_cloud gem.'
+name: build
+description: 'Build DEB package and upload it to PackageCloud using GitHub Actions'
 
 on: [pull_request, push]
 
-inputs:
-  repo:
-    description: 'PackageCloud repo name to use'
-    required: true
-  dir:
-    description: 'base directory where packages are'
-    required: true
-outputs:
-  rpmout:
-    description: 'Output from rpm uploads'
-  debout:
-    description: 'Output from deb uploads'
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.repo }}
-    - ${{ inputs.dir }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+       - name: Export variables containing versions and filename
+        run: |
+          export RELEASE_VERSION=$(cat VERSION)
+          export BUILD_VERSION=$RELEASE_VERSION.$TRAVIS_BUILD_NUMBER
+          export BUILD_DATE=$(date "+%Y%m%d")
+          export PACKAGE_NAME_VERSION=$PACKAGE_NAME-$BUILD_VERSION.deb
+      - name: create sample script
+        run: |
+          mkdir -p .debpkg/usr/bin
+          mkdir -p .debpkg/usr/lib/samplescript
+          echo -e "echo sample" > .debpkg/usr/bin/samplescript
+          chmod +x .debpkg/usr/bin/samplescript
+          echo -e "a=1" > .debpkg/usr/lib/samplescript/samplescript.conf
+      - uses: jiro4989/build-deb-action@v2
+        with:
+          package: samplescript
+          package_root: .debpkg
+          maintainer: your_name
+          version: ${{ github.ref }} # refs/tags/v*.*.*
+          arch: 'amd64'
+          depends: 'libc6 (>= 2.2.1), git'
+          desc: 'this is sample package.'
