@@ -10,9 +10,7 @@
 name: 'PackageCloud'
 description: 'Interact with PackageCloud via the package_cloud gem.'
 
-on:
-  push:
-  pull_request:
+on: [pull_request, push]
 
 inputs:
   repo:
