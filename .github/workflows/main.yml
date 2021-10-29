@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-       - name: Export variables containing versions and filename
+      - name: Export variables containing versions and filename
         run: |
           export RELEASE_VERSION=$(cat VERSION)
           export BUILD_VERSION=$RELEASE_VERSION.$TRAVIS_BUILD_NUMBER
