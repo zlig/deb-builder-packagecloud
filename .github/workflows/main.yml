@@ -11,18 +11,27 @@ name: build
 
 on: [pull_request, push]
 
+env:
+  PACKAGE_NAME: deb-builder-packagecloud
+  REPO_NAME: debs
+  DISTRIBUTION: ubuntu/bionic
+  LICENSE: LGPL-2.1
+  VERSION: 0.1
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
       - name: Export variables containing versions and filename
         run: |
-          export RELEASE_VERSION=$(cat VERSION)
+          export RELEASE_VERSION=$VERSION
           export BUILD_VERSION=$RELEASE_VERSION.$TRAVIS_BUILD_NUMBER
           export BUILD_DATE=$(date "+%Y%m%d")
           export PACKAGE_NAME_VERSION=$PACKAGE_NAME-$BUILD_VERSION.deb
+      - name: Replace version and build number with the Debian control file
+          sed -i "s/__VERSION__/$BUILD_VERSION/g" $PACKAGE_NAME/DEBIAN/control
+          sed -i "s/__DATE__/$BUILD_DATE/g" $PACKAGE_NAME/DEBIAN/control
       - name: create sample script
         run: |
           mkdir -p .debpkg/usr/bin
@@ -30,6 +39,7 @@ jobs:
           echo -e "echo sample" > .debpkg/usr/bin/samplescript
           chmod +x .debpkg/usr/bin/samplescript
           echo -e "a=1" > .debpkg/usr/lib/samplescript/samplescript.conf
+
       - uses: jiro4989/build-deb-action@v2
         with:
           package: samplescript
