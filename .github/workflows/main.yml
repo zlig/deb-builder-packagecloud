@@ -8,7 +8,6 @@
 #
 ##############################################################################################
 name: build
-description: 'Build DEB package and upload it to PackageCloud using GitHub Actions'
 
 on: [pull_request, push]
 
