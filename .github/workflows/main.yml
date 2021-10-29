@@ -44,7 +44,7 @@ jobs:
       - uses: jiro4989/build-deb-action@v2
         with:
           package: ${{ env.PACKAGE_NAME }}
-          package_root: ${{ env.PACKAGE_NAME/DEBIAN/ }}
+          package_root: .debpkg/
           maintainer: your_name
           version: ${{ env.VERSION }}
           arch: 'amd64'
