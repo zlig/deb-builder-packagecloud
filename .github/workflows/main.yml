@@ -30,6 +30,7 @@ jobs:
           export BUILD_DATE=$(date "+%Y%m%d")
           export PACKAGE_NAME_VERSION=$PACKAGE_NAME-$BUILD_VERSION.deb
       - name: Replace version and build number with the Debian control file
+        run: |
           sed -i "s/__VERSION__/$BUILD_VERSION/g" $PACKAGE_NAME/DEBIAN/control
           sed -i "s/__DATE__/$BUILD_DATE/g" $PACKAGE_NAME/DEBIAN/control
       - name: create sample script
@@ -42,10 +43,10 @@ jobs:
 
       - uses: jiro4989/build-deb-action@v2
         with:
-          package: samplescript
-          package_root: .debpkg
+          package: ${{ env.PACKAGE_NAME }}
+          package_root: ${{ env.PACKAGE_NAME/DEBIAN/ }}
           maintainer: your_name
-          version: ${{ github.ref }} # refs/tags/v*.*.*
+          version: ${{ env.VERSION }}
           arch: 'amd64'
           depends: 'libc6 (>= 2.2.1), git'
           desc: 'this is sample package.'
