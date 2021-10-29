@@ -1,4 +1,7 @@
-# deb-builder-packagecloud [![Build Status](https://app.travis-ci.com/zlig/deb-builder-packagecloud.svg?branch=main)](https://app.travis-ci.com/zlig/deb-builder-packagecloud)
+# deb-builder-packagecloud
+
+[deploy debian package](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+[![Build Status](https://app.travis-ci.com/zlig/deb-builder-packagecloud.svg?branch=main)](https://app.travis-ci.com/zlig/deb-builder-packagecloud)
 
 ## Overview
 
