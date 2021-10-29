@@ -13,10 +13,12 @@ on: [pull_request, push]
 
 env:
   PACKAGE_NAME: deb-builder-packagecloud
+  LICENSE: LGPL-2.1
+  VERSION: 0.2
+  AUTHOR: zlig
+  DESCRIPTION: "Sample Debian package built with GitHub Actions"
   REPO_NAME: debs
   DISTRIBUTION: ubuntu/bionic
-  LICENSE: LGPL-2.1
-  VERSION: 0.1
 
 jobs:
   build:
@@ -43,10 +45,10 @@ jobs:
 
       - uses: jiro4989/build-deb-action@v2
         with:
+          arch: 'amd64'
           package: ${{ env.PACKAGE_NAME }}
           package_root: .debpkg/
-          maintainer: your_name
+          maintainer: ${{ env.AUTHOR }}
           version: ${{ env.VERSION }}
-          arch: 'amd64'
           depends: 'libc6 (>= 2.2.1), git'
-          desc: 'this is sample package.'
+          desc: ${{ env.DESCRIPTION }}
