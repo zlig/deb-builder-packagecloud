@@ -25,16 +25,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Export variables containing versions and filename
         run: |
           export RELEASE_VERSION=$VERSION
           export BUILD_VERSION=$RELEASE_VERSION.$TRAVIS_BUILD_NUMBER
           export BUILD_DATE=$(date "+%Y%m%d")
           export PACKAGE_NAME_VERSION=$PACKAGE_NAME-$BUILD_VERSION.deb
+
       - name: Replace version and build number with the Debian control file
         run: |
           sed -i "s/__VERSION__/$BUILD_VERSION/g" $PACKAGE_NAME/DEBIAN/control
           sed -i "s/__DATE__/$BUILD_DATE/g" $PACKAGE_NAME/DEBIAN/control
+
+      - name: Create the Debian package
+        run: |
+          dpkg-deb --build $PACKAGE_NAME
+          mv $PACKAGE_NAME.deb $PACKAGE_NAME_VERSION
+
+      - name: Output detail on the resulting package for debugging purpose
+        run: |
+          ls -l $PACKAGE_NAME_VERSION
+          dpkg --contents $PACKAGE_NAME_VERSION
+          md5sum $PACKAGE_NAME_VERSION
+          sha256sum $PACKAGE_NAME_VERSION
+          export LOCAL_SHA256=$( sha256sum $PACKAGE_NAME_VERSION | cut -d " " -f1 )
+
+
       - name: create sample script
         run: |
           mkdir -p .debpkg/usr/bin
