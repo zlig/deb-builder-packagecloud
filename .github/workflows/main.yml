@@ -41,7 +41,7 @@ jobs:
 
       - name: Build the Debian package
         run: |
-          dpkg-deb --root-owner-group deb --build $PACKAGE_NAME 
+          dpkg-deb --build $PACKAGE_NAME 
           mv $PACKAGE_NAME.deb $ARTIFACT_NAME
 
       - name: Output detail on the resulting package for debugging purpose
