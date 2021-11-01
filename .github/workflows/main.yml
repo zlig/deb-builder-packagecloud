@@ -15,6 +15,7 @@ env:
   PACKAGE_NAME: deb-builder-packagecloud
   LICENSE: LGPL-2.1
   VERSION: 0.2
+  ARCH: noarch
   AUTHOR: zlig
   DESCRIPTION: "Sample Debian package built with GitHub Actions"
   REPO_NAME: debs
@@ -28,19 +29,19 @@ jobs:
 
       - name: Export variables containing versions and filename
         run: |
-          echo "RELEASE_VERSION=$VERSION"                                       >> $GITHUB_ENV
-          echo "BUILD_VERSION=$VERSION.$GITHUB_RUN_NUMBER"                      >> $GITHUB_ENV
-          echo "BUILD_DATE=$(date '+%Y%m%d')"                                   >> $GITHUB_ENV
-          echo "ARTIFACT_NAME=$PACKAGE_NAME-$VERSION.$GITHUB_RUN_NUMBER.deb"    >> $GITHUB_ENV
+          echo "RELEASE_VERSION=$VERSION"                                               >> $GITHUB_ENV
+          echo "BUILD_VERSION=$VERSION.$GITHUB_RUN_NUMBER"                              >> $GITHUB_ENV
+          echo "BUILD_DATE=$(date '+%Y%m%d')"                                           >> $GITHUB_ENV
+          echo "ARTIFACT_NAME=$PACKAGE_NAME-$VERSION.$GITHUB_RUN_NUMBER_$ARCH.deb"      >> $GITHUB_ENV
 
       - name: Replace version and build number with the Debian control file
         run: |
           sed -i "s/__VERSION__/$BUILD_VERSION/g" $PACKAGE_NAME/DEBIAN/control
           sed -i "s/__DATE__/$BUILD_DATE/g" $PACKAGE_NAME/DEBIAN/control
 
-      - name: Create the Debian package
+      - name: Build the Debian package
         run: |
-          dpkg-deb --build $PACKAGE_NAME
+          dpkg-deb --root-owner-group deb --build $PACKAGE_NAME 
           mv $PACKAGE_NAME.deb $ARTIFACT_NAME
 
       - name: Output detail on the resulting package for debugging purpose
@@ -51,21 +52,9 @@ jobs:
           sha256sum $ARTIFACT_NAME
           export LOCAL_SHA256=$( sha256sum $ARTIFACT_NAME | cut -d " " -f1 )
 
-
-      - name: create sample script
-        run: |
-          mkdir -p .debpkg/usr/bin
-          mkdir -p .debpkg/usr/lib/samplescript
-          echo -e "echo sample" > .debpkg/usr/bin/samplescript
-          chmod +x .debpkg/usr/bin/samplescript
-          echo -e "a=1" > .debpkg/usr/lib/samplescript/samplescript.conf
-
-      - uses: jiro4989/build-deb-action@v2
+      - name: Upload Debian Package to GitHub
+        uses: actions/upload-artifact@v2
         with:
-          arch: 'amd64'
-          package: ${{ env.PACKAGE_NAME }}
-          package_root: .debpkg/
-          maintainer: ${{ env.AUTHOR }}
-          version: ${{ env.VERSION }}
-          depends: 'libc6 (>= 2.2.1), git'
-          desc: ${{ env.DESCRIPTION }}
+          name: ${{ env.PACKAGE_NAME }}
+          path: "*.deb"
+
