@@ -28,10 +28,10 @@ jobs:
 
       - name: Export variables containing versions and filename
         run: |
-          export RELEASE_VERSION=$VERSION
-          export BUILD_VERSION=$RELEASE_VERSION.$GITHUB_RUN_NUMBER
-          export BUILD_DATE=$(date "+%Y%m%d")
-          export PACKAGE_NAME_VERSION=$PACKAGE_NAME-$BUILD_VERSION.deb
+          echo "RELEASE_VERSION=$VERSION"                               >> $GITHUB_ENV
+          echo "BUILD_VERSION=$RELEASE_VERSION.$GITHUB_RUN_NUMBER"      >> $GITHUB_ENV
+          echo "BUILD_DATE=$(date '+%Y%m%d')"                           >> $GITHUB_ENV
+          echo "PACKAGE_NAME_VERSION=$PACKAGE_NAME-$BUILD_VERSION.deb"  >> $GITHUB_ENV
 
       - name: Replace version and build number with the Debian control file
         run: |
