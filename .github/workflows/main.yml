@@ -61,7 +61,7 @@ jobs:
       - name: Upload package PackageCloud.io
         uses: danielmundi/upload-packagecloud@v1
         with:
-          package-name: ${{ env.PACKAGE_NAME }}
+          package-name: ${{ env.ARTIFACT_NAME }}
           packagecloud-username: ${{ secrets.PACKAGECLOUD_USER }}
           packagecloud-repo: debs
           packagecloud-distrib: ${{ env.DISTRIBUTION }}
