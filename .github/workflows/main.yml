@@ -52,7 +52,7 @@ jobs:
           sha256sum $ARTIFACT_NAME
           export LOCAL_SHA256=$( sha256sum $ARTIFACT_NAME | cut -d " " -f1 )
 
-      - name: Upload Debian Package to GitHub
+      - name: Upload artifacts to share data between jobs
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.PACKAGE_NAME }}
