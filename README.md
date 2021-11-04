@@ -1,5 +1,5 @@
 # deb-builder-packagecloud
-![build](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+![build](https://github.com/zlig/deb-builder-packagecloud/actions/workflows/main.yml/badge.svg)
 
 ## Overview
 
