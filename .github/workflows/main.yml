@@ -63,6 +63,6 @@ jobs:
         with:
           package-name: ${{ env.ARTIFACT_NAME }}
           packagecloud-username: ${{ secrets.PACKAGECLOUD_USER }}
-          packagecloud-repo: debs
+          packagecloud-repo: ${{ env.REPO_NAME }}
           packagecloud-distrib: ${{ env.DISTRIBUTION }}
           packagecloud-token: ${{ secrets.PACKAGECLOUD_TOKEN }}
