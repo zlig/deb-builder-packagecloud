@@ -24,6 +24,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distrib: [any/any, ubuntu/bionic, ubuntu/focal]
     steps:
       - uses: actions/checkout@v2
 
@@ -64,5 +67,5 @@ jobs:
           package-name: ${{ env.ARTIFACT_NAME }}
           packagecloud-username: ${{ secrets.PACKAGECLOUD_USER }}
           packagecloud-repo: ${{ env.REPO_NAME }}
-          packagecloud-distrib: ${{ env.DISTRIBUTION }}
+          packagecloud-distrib: ${{ matrix.DISTRIB }}
           packagecloud-token: ${{ secrets.PACKAGECLOUD_TOKEN }}
